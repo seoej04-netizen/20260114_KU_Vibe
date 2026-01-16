@@ -237,6 +237,121 @@ st.markdown("""
   - 비만 (≥ 25)
 """)
 
+
+import streamlit as st
+
+st.set_page_config(page_title="BMI 계산기", page_icon="⚖️")
+
+st.title("BMI 계산기")
+st.write("키와 몸무게를 입력하고 BMI를 계산해보세요.")
+
+# + - 버튼 크기 줄이기 & BMI 계산 버튼만 빨간색으로 만들기
+st.markdown(
+    """
+    <style>
+    /* + - 작은 버튼 */
+    .small-btn > button {
+        padding: 0.1rem 0.3rem;
+        font-size: 0.7rem;
+        line-height: 1;
+    }
+
+    /* BMI 계산하기 버튼 빨간색 */
+    .red-button > button {
+        background-color: red !important;
+        color: white !important;
+        border-color: red !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# 키 입력
+st.subheader("키 (cm)")
+c1, c2, c3 = st.columns([3, 1, 1])
+
+with c1:
+    height = st.number_input(
+        "키를 입력하세요 (cm)",
+        min_value=50.0,
+        max_value=250.0,
+        value=170.0,
+        step=0.1,
+        label_visibility="collapsed"
+    )
+with c2:
+    st.markdown('<div class="small-btn">', unsafe_allow_html=True)
+    plus_h = st.button("+", key="plus_h")
+    st.markdown('</div>', unsafe_allow_html=True)
+with c3:
+    st.markdown('<div class="small-btn">', unsafe_allow_html=True)
+    minus_h = st.button("-", key="minus_h")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+if plus_h:
+    height = min(height + 1, 250.0)
+if minus_h:
+    height = max(height - 1, 50.0)
+
+# 몸무게 입력
+st.subheader("몸무게 (kg)")
+c4, c5, c6 = st.columns([3, 1, 1])
+
+with c4:
+    weight = st.number_input(
+        "몸무게를 입력하세요 (kg)",
+        min_value=10.0,
+        max_value=300.0,
+        value=65.0,
+        step=0.1,
+        label_visibility="collapsed"
+    )
+with c5:
+    st.markdown('<div class="small-btn">', unsafe_allow_html=True)
+    plus_w = st.button("+", key="plus_w")
+    st.markdown('</div>', unsafe_allow_html=True)
+with c6:
+    st.markdown('<div class="small-btn">', unsafe_allow_html=True)
+    minus_w = st.button("-", key="minus_w")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+if plus_w:
+    weight = min(weight + 1, 300.0)
+if minus_w:
+    weight = max(weight - 1, 10.0)
+
+st.write(f"현재 키: **{height:.1f} cm**, 몸무게: **{weight:.1f} kg**")
+
+st.markdown("---")
+
+# 페이지 맨 아래 왼쪽에 BMI 계산 버튼 배치
+left_col, _ = st.columns([1, 3])
+with left_col:
+    st.markdown('<div class="red-button">', unsafe_allow_html=True)
+    calc = st.button("BMI 계산하기")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+if calc:
+    height_m = height / 100
+    bmi = weight / (height_m ** 2)
+
+    if bmi < 18.5:
+        status = "저체중"
+    elif bmi < 23:
+        status = "정상"
+    elif bmi < 25:
+        status = "과체중"
+    else:
+        status = "비만"
+
+    st.markdown("---")
+    st.subheader("결과")
+    st.write(f"**BMI:** {bmi:.1f}")
+    st.write(f"**판정:** {status}")
+
+
+
 # 예시 답안
 with st.expander("💡 과제 1 예시 답안"):
     st.subheader("회원가입")
